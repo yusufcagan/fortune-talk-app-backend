@@ -18,7 +18,10 @@ export class FortunesService {
       data: { ...data, userId },
     });
 
-    const aiResult = await this.generateFortuneResult(data.message);
+    const aiResult = await this.generateFortuneResult(
+      data.imageUrl,
+      data.message,
+    );
 
     const updatedFortune = await this.prisma.fortune.update({
       where: { id: fortune.id },
@@ -35,21 +38,36 @@ export class FortunesService {
     });
   }
 
-  private async generateFortuneResult(message?: string): Promise<string> {
+  private async generateFortuneResult(
+    imageUrl: string,
+    message?: string,
+  ): Promise<string> {
     try {
       const response = await this.openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4o',
         messages: [
           {
             role: 'system',
             content:
-              'Sen enerjisi yüksek, pozitif, sezgisel bir fal yorumcususun. Kullanıcının mesajına göre kısa ama anlamlı, umut dolu bir kahve falı yorumu yaz.',
+              'Sen enerjisi yüksek, pozitif bir kahve falı yorumcususun. Fotoğraftaki kahve fincanını analiz et, sezgisel ve motive edici bir yorum yaz. Eğer fincanı tanıyamazsan "Fincan net değil, yorum yapamıyorum." de.',
           },
           {
             role: 'user',
-            content: message || 'Yorum yok',
+            content: [
+              {
+                type: 'text',
+                text: message?.trim()
+                  ? `Kullanıcının notu: ${message}`
+                  : 'Kullanıcı not girmedi. Sadece fincan fotoğrafına göre yorum yap.',
+              },
+              {
+                type: 'image_url',
+                image_url: { url: imageUrl },
+              },
+            ],
           },
         ],
+        max_tokens: 300,
       });
 
       return response.choices[0].message?.content || 'Yorum oluşturulmadı.';
