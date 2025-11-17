@@ -18,8 +18,21 @@ model User {
   email     String   @unique
   password  String
   credits   Int      @default(3)
+  membership    String?
+  membershipEndsAt DateTime?
   createdAt DateTime @default(now())
   fortunes  Fortune[]
+  purchases     Purchase[]
+}
+
+model Purchase {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  packageType String   // 'weekly' | 'monthly' | 'yearly' | 'credit10'
+  credits     Int
+  purchasedAt DateTime @default(now())
+  expiresAt   DateTime?
+  user        User     @relation(fields: [userId], references: [id])
 }
 
 model Fortune {

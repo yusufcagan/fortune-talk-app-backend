@@ -1,4 +1,11 @@
-import { Controller, Get, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -26,5 +33,19 @@ export class UsersController {
   })
   getProfile(@Request() req: AuthenticatedRequest) {
     return this.userSevice.findById(req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('buy-membership')
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 200,
+    description: 'Buy a membership',
+  })
+  async buyMembership(
+    @Request() req: AuthenticatedRequest,
+    @Body() body: { packageType: 'weekly' | 'monthly' | 'yearly' | 'credit10' },
+  ) {
+    return this.userSevice.buyMembership(req.user.id, body.packageType);
   }
 }
