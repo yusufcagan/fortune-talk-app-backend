@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import OpenAI from 'openai';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateFortuneDto } from './dto/create-fortune.dto';
@@ -14,6 +14,21 @@ export class FortunesService {
   }
 
   async create(userId: number, data: CreateFortuneDto) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Kullanıcı bulunamadı.');
+    }
+
+    if (user.credits <= 0) {
+      return {
+        message: 'Krediniz bitmiş! Yeni fal bakabilmek için kredi satın alın.',
+        success: false,
+      };
+    }
+
     const fortune = await this.prisma.fortune.create({
       data: { ...data, userId },
     });
@@ -28,7 +43,16 @@ export class FortunesService {
       data: { result: aiResult },
     });
 
-    return updatedFortune;
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { credits: { decrement: 1 } },
+    });
+
+    return {
+      message: 'Fal yorumunuz hazır!',
+      creditsLeft: user.credits - 1,
+      fortune: updatedFortune,
+    };
   }
 
   async findAllByUser(userId: number) {

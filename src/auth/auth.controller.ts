@@ -9,8 +9,7 @@ import {
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -41,6 +40,7 @@ export class AuthController {
     schema: {
       example: {
         message: 'Giriş Başarılı',
+        credits: 3,
         access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
       },
     },

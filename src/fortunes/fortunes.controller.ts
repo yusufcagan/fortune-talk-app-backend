@@ -10,15 +10,7 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FortunesService } from './fortunes.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateFortuneDto } from './dto/create-fortune.dto';
-import { Request as ExpressRequest } from 'express';
-
-interface AuthenticatedRequest extends ExpressRequest {
-  user: {
-    id: number;
-    email: string;
-    createdAt: string;
-  };
-}
+import type { AuthenticatedRequest } from 'src/types/request.interface';
 
 @ApiTags('Fortunes')
 @Controller('fortunes')

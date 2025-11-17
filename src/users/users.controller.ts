@@ -2,15 +2,7 @@ import { Controller, Get, Request, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Request as ExpressRequest } from 'express';
-
-interface AuthenticatedRequest extends ExpressRequest {
-  user: {
-    id: number;
-    email: string;
-    createdAt: string;
-  };
-}
+import type { AuthenticatedRequest } from 'src/types/request.interface';
 
 @ApiTags('Users')
 @Controller('users')
@@ -27,6 +19,7 @@ export class UsersController {
       example: {
         id: 1,
         email: 'user@mail.com',
+        credits: 3,
         createdAt: '2025-11-13T14:41:23.675Z',
       },
     },

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
-import { emit } from 'process';
 
 @Injectable()
 export class UsersService {
@@ -12,6 +11,7 @@ export class UsersService {
       select: {
         id: true,
         email: true,
+        credits: true,
         createdAt: true,
       },
     });

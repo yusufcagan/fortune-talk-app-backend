@@ -48,7 +48,7 @@ export class AuthService {
 
   async login(
     body: LoginDto,
-  ): Promise<{ access_token: string; message: string }> {
+  ): Promise<{ access_token: string; credits: number; message: string }> {
     const { email, password } = body;
 
     const user = await this.prisma.user.findUnique({
@@ -75,6 +75,7 @@ export class AuthService {
 
     return {
       message: await this.i18n.translate('auth.login_success'),
+      credits: user.credits,
       access_token: token,
     };
   }
