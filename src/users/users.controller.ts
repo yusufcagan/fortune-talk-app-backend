@@ -10,6 +10,7 @@ import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import type { AuthenticatedRequest } from 'src/types/request.interface';
+import { BuyMembershipDto } from './dto/buy-membership.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -44,7 +45,7 @@ export class UsersController {
   })
   async buyMembership(
     @Request() req: AuthenticatedRequest,
-    @Body() body: { packageType: 'weekly' | 'monthly' | 'yearly' | 'credit10' },
+    @Body() body: BuyMembershipDto,
   ) {
     return this.userSevice.buyMembership(req.user.id, body.packageType);
   }

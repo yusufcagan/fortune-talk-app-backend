@@ -34,7 +34,7 @@ export class FortunesService {
     });
 
     const aiResult = await this.generateFortuneResult(
-      data.imageUrl,
+      data.imageBase64,
       data.message,
     );
 
@@ -59,11 +59,17 @@ export class FortunesService {
     return this.prisma.fortune.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        message: true,
+        result: true,
+        createdAt: true,
+      },
     });
   }
 
   private async generateFortuneResult(
-    imageUrl: string,
+    imageBase64: string,
     message?: string,
   ): Promise<string> {
     try {
@@ -73,7 +79,7 @@ export class FortunesService {
           {
             role: 'system',
             content:
-              'Sen enerjisi yüksek, pozitif bir kahve falı yorumcususun. Fotoğraftaki kahve fincanını analiz et, sezgisel ve motive edici bir yorum yaz. Eğer fincanı tanıyamazsan "Fincan net değil, yorum yapamıyorum." de.',
+              'Sen enerjisi yüksek, pozitif bir kahve falı yorumcususun. Fotoğraftaki kahve fincanını analiz et, sezgisel ve motive edici bir yorum yaz. Her yorumun unic bir yorum olsun. Eğer fincanı tanıyamazsan "Fincan net değil, yorum yapamıyorum." de.',
           },
           {
             role: 'user',
@@ -86,7 +92,7 @@ export class FortunesService {
               },
               {
                 type: 'image_url',
-                image_url: { url: imageUrl },
+                image_url: { url: `data:image/jpeg;base64,${imageBase64}` },
               },
             ],
           },

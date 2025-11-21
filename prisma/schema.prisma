@@ -36,13 +36,14 @@ model Purchase {
 }
 
 model Fortune {
-  id        Int      @id @default(autoincrement())
-  imageUrl  String
-  message   String?
-  result    String?
-  userId    Int
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
+  id          Int      @id @default(autoincrement())
+  imageBase64 String @default("N/A")
+  message     String?
+  result      String?
+  userId      Int
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
 }
+
 
 
