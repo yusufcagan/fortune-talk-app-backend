@@ -35,4 +35,17 @@ export class FortunesController {
   findAll(@Request() req: AuthenticatedRequest) {
     return this.fortunesService.findAllByUser(req.user.id);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('dailyCookie')
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 201,
+    description: 'Create new daily fortunes',
+  })
+  openDAilyCookie(@Request() req) {
+    const userId = req.user.id;
+
+    return this.fortunesService.openDailyCookie(userId);
+  }
 }

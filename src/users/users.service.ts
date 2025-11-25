@@ -10,15 +10,32 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   async findById(id: number) {
-    return this.prisma.user.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        email: true,
-        credits: true,
-        createdAt: true,
-      },
-    });
+    let user = await this.prisma.user.findUnique({ where: { id } });
+
+    const today = new Date().toISOString().slice(0, 10);
+    const last = user?.lastCookieDate
+      ? user.lastCookieDate.toISOString().slice(0, 10)
+      : null;
+
+    if (last !== today) {
+      await this.prisma.user.update({
+        where: { id },
+        data: {
+          dailyCookies: 1,
+          lastCookieDate: new Date(),
+        },
+      });
+
+      user = await this.prisma.user.findUnique({ where: { id } });
+    }
+
+    return {
+      id: user?.id,
+      email: user?.email,
+      credits: user?.credits,
+      dailyCookies: user?.dailyCookies,
+      createdAt: user?.createdAt,
+    };
   }
 
   async buyMembership(

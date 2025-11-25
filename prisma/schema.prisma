@@ -14,36 +14,35 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  credits   Int      @default(3)
-  membership    String?
+  id               Int        @id @default(autoincrement())
+  email            String     @unique
+  password         String
+  credits          Int        @default(3)
+  membership       String?
   membershipEndsAt DateTime?
-  createdAt DateTime @default(now())
-  fortunes  Fortune[]
-  purchases     Purchase[]
+  dailyCookies     Int        @default(1)
+  lastCookieDate   DateTime?
+  createdAt        DateTime   @default(now())
+  fortunes         Fortune[]
+  purchases        Purchase[]
 }
 
 model Purchase {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   userId      Int
-  packageType String   // 'weekly' | 'monthly' | 'yearly' | 'credit10'
+  packageType String // 'weekly' | 'monthly' | 'yearly' | 'credit10'
   credits     Int
-  purchasedAt DateTime @default(now())
+  purchasedAt DateTime  @default(now())
   expiresAt   DateTime?
-  user        User     @relation(fields: [userId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
 }
 
 model Fortune {
   id          Int      @id @default(autoincrement())
-  imageBase64 String @default("N/A")
+  imageBase64 String   @default("N/A")
   message     String?
   result      String?
   userId      Int
   createdAt   DateTime @default(now())
   user        User     @relation(fields: [userId], references: [id])
 }
-
-
-

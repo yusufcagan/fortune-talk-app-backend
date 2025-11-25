@@ -13,11 +13,14 @@ import * as path from 'path';
 import { PrismaModule } from 'prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { FortunesModule } from './fortunes/fortunes.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { CronService } from './cron/cron.service';
 
 @Module({
   imports: [
     PrismaModule,
     AuthModule,
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -39,6 +42,7 @@ import { FortunesModule } from './fortunes/fortunes.module';
     UsersModule,
     FortunesModule,
   ],
+  providers: [CronService],
   // controllers: [AppController],
   // providers: [AppService],
 })

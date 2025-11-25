@@ -28,6 +28,7 @@ export class UsersController {
         id: 1,
         email: 'user@mail.com',
         credits: 3,
+        dailyCookies: 1,
         createdAt: '2025-11-13T14:41:23.675Z',
       },
     },
